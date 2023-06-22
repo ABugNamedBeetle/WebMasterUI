@@ -1,5 +1,0 @@
-{
-    "terminal.integrated.env.windows": {
-        "PATH": "D:\\Arpit Sharma\\Downloads\\ApritProj\\WebMasterUI\\node_modules\\.bin;${env:PATH}",
-    }
-}
