@@ -1,0 +1,54 @@
+.web-container {
+
+  padding: .75rem;
+
+  background-color: var(--fill-color);
+  color: var(--neutral-foreground-rest);
+
+}
+
+
+fluent-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+
+}
+
+p {
+  font-size: initial;
+}
+
+h2 {
+  font-size: var(--type-ramp-plus-5-font-size);
+  line-height: var(--type-ramp-plus-5-line-height);
+}
+
+h3 {
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+}
+
+fluent-card>fluent-button {
+  align-self: flex-end;
+}
+
+fluent-tree-view {
+  width: 100%;
+}
+
+fluent-tab {
+  font-weight: 700;
+}
+
+fluent-divider {
+  margin: 1rem 0;
+}
+
+.select-query-body{
+  flex-grow: 1;
+  padding: 0.5rem;
+  background: var(--neutral-layer-2);
+  border-radius: 0.5rem;
+  margin: 0 0 0 1rem;
+}

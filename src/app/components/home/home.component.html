@@ -1,0 +1,161 @@
+<div class="web-container">
+    <div style="display: flex; flex-direction: row; ">
+        <h1>WebMasterUI</h1>
+
+        <div style="align-self: flex-end; margin-left: auto; margin-bottom: 0.5rem;">
+            <fluent-switch style="display: inline;" labelPosition="above" id="dark-mode-toggle">Dark
+                Mode</fluent-switch>
+
+        </div>
+
+    </div>
+    <p>Console to push and execute built, prebuilt Commands from Web. </p>
+
+    <h3 style="margin-bottom: .5rem;">WebSocket Panel</h3>
+    <fluent-card>
+        <h3 style="font-weight: 600;">Select websocket:</h3>
+        <fluent-combobox id="websocket-selector">
+            <fluent-option>simple-web-socket-abnb.onrender.com</fluent-option>
+            <fluent-option selected>simple-web-socket-abnb.glitch.me</fluent-option>
+        </fluent-combobox>
+
+        <h3 style="font-weight: 600;">Options</h3>
+        <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1rem;;">
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <span>Status :</span>
+
+                <svg color="red" style="margin-left: .5rem;" width="2rem" height="2rem" viewBox="0 0 10 10"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill="currentColor"
+                        d="M5 10A5 5 0 1 0 5 0a5 5 0 0 0 0 10Zm2.1-5.9L4.85 6.35a.5.5 0 0 1-.7 0l-1-1a.5.5 0 0 1 .7-.7l.65.64 1.9-1.9a.5.5 0 0 1 .7.71Z">
+                    </path>
+                </svg>
+
+            </div>
+
+
+            <fluent-button appearance="accent">Connect</fluent-button>
+        </div>
+        <div style="align-self: flex-end; margin-left: auto; margin-bottom: 0.5rem;">
+            <fluent-switch id="auto-reconnect-toggle">Auto Reconnect</fluent-switch>
+        </div>
+
+        <div class="divider" style="margin: 1remx 0;"></div>
+        <fluent-tabs activeid="entrees">
+            <fluent-tab id="select-query">Select Query</fluent-tab>
+            <fluent-tab id="create-query">Create Query</fluent-tab>
+
+            <fluent-tab-panel id="select-query">
+                <fluent-card>
+                    <div style="display: flex; flex-direction: row;">
+
+                        <div style="flex-shrink: 1; width: 30%;">
+                            <fluent-tree-view >
+                                <p style="font-size: .8rem; font-weight: 700;">Select command execute</p>
+                                <fluent-tree-item selected>Daisy</fluent-tree-item>
+                                <fluent-tree-item>Sunflower</fluent-tree-item>
+                                <fluent-tree-item>Rose</fluent-tree-item>
+                                
+                                <fluent-tree-item>Petunia</fluent-tree-item>
+                                <fluent-tree-item>Tulip</fluent-tree-item>
+                            </fluent-tree-view>
+                        </div>
+                        
+                        
+                        <div class="select-query-body">
+                            <p>Hello Command</p>
+                        </div>
+                    </div>
+                        
+                    
+                </fluent-card>
+            </fluent-tab-panel>
+            <fluent-tab-panel id="create-queryl">
+                <fluent-card>
+                    Create Query
+                   
+
+                   
+                </fluent-card>
+            </fluent-tab-panel>
+
+        </fluent-tabs>
+        <fluent-divider></fluent-divider>
+        <!-- <fluent-card>
+            <h2>Hello</h2>
+            <fluent-text-field [(ngModel)]="exampleTextField" name="exampleTextField" ngDefaultControl
+                placeholder="Enter Some Text"></fluent-text-field>
+            <fluent-button appearance="accent" (click)="onClick()">Click Me</fluent-button>
+        </fluent-card> -->
+    </fluent-card>
+</div>
+
+<!-- 
+<div class="web-container">
+   
+        <div class="header">
+          <h2>Custom accent color</h2>
+        </div>
+        <div class="controls">
+          <fluent-anchor appearance="accent">Anchor</fluent-anchor>
+          <fluent-button appearance="accent">Button</fluent-button>
+          <fluent-badge appearance="accent">Badge</fluent-badge>
+          <fluent-breadcrumb id="breadcrumb">
+            <fluent-breadcrumb-item href="#">Foo</fluent-breadcrumb-item>
+            <fluent-breadcrumb-item href="#">Bar</fluent-breadcrumb-item>
+            <fluent-breadcrumb-item>Current</fluent-breadcrumb-item>
+          </fluent-breadcrumb>
+          <fluent-combobox>
+            <fluent-option>Extra Small</fluent-option>
+            <fluent-option>Small</fluent-option>
+            <fluent-option selected>Medium</fluent-option>
+            <fluent-option>Large</fluent-option>
+            <fluent-option>Extra Large</fluent-option>
+          </fluent-combobox>
+          <fluent-switch checked id="toggle">Checked</fluent-switch>
+          <fluent-tree-view>
+            <fluent-tree-item selected>Daisy</fluent-tree-item>
+            <fluent-tree-item>Sunflower</fluent-tree-item>
+            <fluent-tree-item>Rose</fluent-tree-item>
+            <fluent-divider></fluent-divider>
+            <fluent-tree-item>Petunia</fluent-tree-item>
+            <fluent-tree-item>Tulip</fluent-tree-item>
+          </fluent-tree-view>
+        </div>
+     
+</div> -->
+<!-- 
+<fluent-switch id="switch01">
+    <span slot="checked-message">On</span>
+    <span slot="unchecked-message">Off</span>
+    <label for="cap-switch">Captions:</label>
+</fluent-switch>
+
+<fluent-select title="Select a section">
+    <fluent-option value="1">Beginning</fluent-option>
+    <fluent-option value="2">Middle</fluent-option>
+    <fluent-option value="3">End</fluent-option>
+</fluent-select>
+
+<fluent-card>
+    <label for="cap-switch">Captions:</label>
+    
+        <fluent-slider min="0" max="100" value="50" step="5" style="max-width: 300px;" title="Set the temperature">
+            <fluent-slider-label>
+                0&#8451;
+            </fluent-slider-label>
+            <fluent-slider-label position="25">
+                25&#8451;
+            </fluent-slider-label>
+            <fluent-slider-label position="50">
+                50&#8451;
+            </fluent-slider-label>
+            <fluent-slider-label position="75">
+                75&#8451;
+            </fluent-slider-label>
+            <fluent-slider-label position="100">
+                100&#8451;
+            </fluent-slider-label>
+        </fluent-slider>
+    
+</fluent-card> -->
