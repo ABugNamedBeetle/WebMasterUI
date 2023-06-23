@@ -51,4 +51,35 @@ fluent-divider {
   background: var(--neutral-layer-2);
   border-radius: 0.5rem;
   margin: 0 0 0 1rem;
+  position: relative;
+  
+}
+.select-query-body>div{
+  max-height: 24rem;
+  overflow-y: auto;
+}
+.select-query-body>div>p{
+  margin: 0;
+  font-family: monospace;
+  font-size: 1rem;
+  
+}
+/* select query command tree view */
+.sq-command-view{    
+  
+    max-height: 18rem;
+    
+    overflow-y: auto;
+    
+    margin-bottom: 0.25rem; /*for aesthetics to maintain the gab btw body and this*/
+}
+.sq-command-view > fluent-tree-item{
+  margin-bottom: 0.125rem;
+}
+
+.select-query-buttons{
+  position: absolute;
+  bottom: .5rem;
+  right: .5rem;
+  
 }
