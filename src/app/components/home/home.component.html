@@ -14,9 +14,19 @@
     <h3 style="margin-bottom: .5rem;">WebSocket Panel</h3>
     <fluent-card>
         <h3 style="font-weight: 600;">Select websocket:</h3>
-        <fluent-combobox id="websocket-selector">
+        <fluent-combobox id="websocket-selector" (change)="test($event)">
             <fluent-option>simple-web-socket-abnb.onrender.com</fluent-option>
             <fluent-option selected>simple-web-socket-abnb.glitch.me</fluent-option>
+        </fluent-combobox>
+
+        <fluent-combobox id="websocket-client-selector" style="margin-top: 1rem;">
+            <fluent-option selected>webmaster</fluent-option>
+            
+        </fluent-combobox>
+        <h4 style="font-weight: 600;">Secret Channel:</h4>
+        <fluent-combobox id="websocket-client-selector">
+            <fluent-option selected>my-secret-channel</fluent-option>
+            
         </fluent-combobox>
 
         <h3 style="font-weight: 600;">Options</h3>

@@ -24,7 +24,7 @@ h2 {
   line-height: var(--type-ramp-plus-5-line-height);
 }
 
-h3 {
+h3, h4{
   margin-top: 1rem;
   margin-bottom: .5rem;
 }
