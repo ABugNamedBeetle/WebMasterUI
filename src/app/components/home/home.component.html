@@ -14,17 +14,17 @@
     <h3 style="margin-bottom: .5rem;">WebSocket Panel</h3>
     <fluent-card>
         <h3 style="font-weight: 600;">Select websocket:</h3>
-        <fluent-combobox id="websocket-selector" (change)="test($event)">
+        <fluent-combobox id="websocket-host-selector" (ngModal)="onWSUrlChange($event)">
             <fluent-option>simple-web-socket-abnb.onrender.com</fluent-option>
             <fluent-option selected>simple-web-socket-abnb.glitch.me</fluent-option>
         </fluent-combobox>
 
-        <fluent-combobox id="websocket-client-selector" style="margin-top: 1rem;">
+        <fluent-combobox id="websocket-client-selector" style="margin-top: 1rem;" (change)="onWSClientChange($event)">
             <fluent-option selected>webmaster</fluent-option>
             
         </fluent-combobox>
         <h4 style="font-weight: 600;">Secret Channel:</h4>
-        <fluent-combobox id="websocket-client-selector">
+        <fluent-combobox id="websocket-channel-selector" (change)="onWSChannelChange($event)">
             <fluent-option selected>my-secret-channel</fluent-option>
             
         </fluent-combobox>
@@ -34,7 +34,7 @@
             <div style="display: flex; flex-direction: row; align-items: center;">
                 <span>Status :</span>
 
-                <svg color="red" style="margin-left: .5rem;" width="2rem" height="2rem" viewBox="0 0 10 10"
+                <svg [style.color]="wsIconState" style="margin-left: .5rem;" width="2rem" height="2rem" viewBox="0 0 10 10"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill="currentColor"
                         d="M5 10A5 5 0 1 0 5 0a5 5 0 0 0 0 10Zm2.1-5.9L4.85 6.35a.5.5 0 0 1-.7 0l-1-1a.5.5 0 0 1 .7-.7l.65.64 1.9-1.9a.5.5 0 0 1 .7.71Z">
@@ -44,7 +44,7 @@
             </div>
 
 
-            <fluent-button appearance="accent">Connect</fluent-button>
+            <fluent-button appearance="accent" (click)="socketConnect()">Connect</fluent-button>
         </div>
         <div style="align-self: flex-end; margin-left: auto; margin-bottom: 0.5rem;">
             <fluent-switch id="auto-reconnect-toggle">Auto Reconnect</fluent-switch>
@@ -80,8 +80,8 @@
                         
                         <div class="select-query-body">
                             <div>
-                                <p>>Hello Command <br>>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea dolorem sequi reiciendis recusandae itaque explicabo dignissimos laboriosam quos repellendus perferendis eaque modi, aliquid delectus est autem repellat et? Sed, commodi? Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam quod adipisci iusto aspernatur id, dolores possimus nihil accusantium fugit odit ipsam fuga. Ipsa deserunt vitae mollitia quod accusamus expedita nisi.</p>
-
+                                <p id="sq-body-text">                                   
+                                </p>
                             </div>
                             <div class="select-query-buttons">
                                 <fluent-button appearance="accent">Launch</fluent-button>

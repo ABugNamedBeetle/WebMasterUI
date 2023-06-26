@@ -60,10 +60,11 @@ fluent-divider {
 }
 .select-query-body>div>p{
   margin: 0;
-  font-family: monospace;
+  font-family: monospace !important;
   font-size: 1rem;
   
 }
+
 /* select query command tree view */
 .sq-command-view{    
   
