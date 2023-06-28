@@ -10,3 +10,13 @@ Summary: this is the third link btw the websocket and webcommander, this is WebM
 </div>
 <img style="padding-top:1rem" src="./demo/demo_gif.gif">
 
+
+<!-- 
+    TODO:
+        implement list peer method in websocket server -> same in webmaster
+        
+
+
+
+
+ -->

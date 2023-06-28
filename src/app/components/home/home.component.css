@@ -24,7 +24,8 @@ h2 {
   line-height: var(--type-ramp-plus-5-line-height);
 }
 
-h3, h4{
+h3,
+h4 {
   margin-top: 1rem;
   margin-bottom: .5rem;
 }
@@ -45,42 +46,77 @@ fluent-divider {
   margin: 1rem 0;
 }
 
-.select-query-body{
+.ws-connection-bar {
+  --color1: white;
+  --stripe-size: 1rem;
+  flex-grow: 1;
+  margin: 0 1rem;
+  border-radius: .5rem;
+  height: 2rem;
+  background-color: var(--accent-fill-rest);
+  background-size: 2.82843rem;
+  background-image: repeating-linear-gradient(45deg, transparent, 
+                                                     transparent 1rem, 
+                                                     var(--color1) 1rem, 
+                                                     var(--color1) 2rem);
+  animation: slide 2s linear infinite;
+
+
+
+}
+
+@keyframes slide {
+  0% {
+    background-position-x: 0px;
+    
+  }
+  
+  100% {
+    background-position-x: 2.82843rem;
+  }
+}
+
+
+.select-query-body {
   flex-grow: 1;
   padding: 0.5rem;
   background: var(--neutral-layer-2);
   border-radius: 0.5rem;
   margin: 0 0 0 1rem;
   position: relative;
-  
+
 }
-.select-query-body>div{
+
+.select-query-body>div {
   max-height: 24rem;
   overflow-y: auto;
 }
-.select-query-body>div>p{
+
+.select-query-body>div>p {
   margin: 0;
   font-family: monospace !important;
   font-size: 1rem;
-  
+
 }
 
 /* select query command tree view */
-.sq-command-view{    
-  
-    max-height: 18rem;
-    
-    overflow-y: auto;
-    
-    margin-bottom: 0.25rem; /*for aesthetics to maintain the gab btw body and this*/
+.sq-command-view {
+
+  max-height: 18rem;
+
+  overflow-y: auto;
+
+  margin-bottom: 0.25rem;
+  /*for aesthetics to maintain the gab btw body and this*/
 }
-.sq-command-view > fluent-tree-item{
+
+.sq-command-view>fluent-tree-item {
   margin-bottom: 0.125rem;
 }
 
-.select-query-buttons{
+.select-query-buttons {
   position: absolute;
   bottom: .5rem;
   right: .5rem;
-  
+
 }

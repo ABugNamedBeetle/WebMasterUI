@@ -13,7 +13,7 @@ export class WebClientDetail {
 
     wsUrl(): string{
         if(!this.empty()){
-            return `ws://${this.webSocketHost}/${this.webSecretChannel}`;
+            return `wss://${this.webSocketHost}/${this.webClientName}`;
         }else{
             throw new Error("WebClient is Invalid");
         }

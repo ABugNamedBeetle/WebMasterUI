@@ -21,12 +21,12 @@
 
         <fluent-combobox id="websocket-client-selector" style="margin-top: 1rem;" (change)="onWSClientChange($event)">
             <fluent-option selected>webmaster</fluent-option>
-            
+
         </fluent-combobox>
         <h4 style="font-weight: 600;">Secret Channel:</h4>
         <fluent-combobox id="websocket-channel-selector" (change)="onWSChannelChange($event)">
             <fluent-option selected>my-secret-channel</fluent-option>
-            
+
         </fluent-combobox>
 
         <h3 style="font-weight: 600;">Options</h3>
@@ -34,8 +34,8 @@
             <div style="display: flex; flex-direction: row; align-items: center;">
                 <span>Status :</span>
 
-                <svg [style.color]="wsIconState" style="margin-left: .5rem;" width="2rem" height="2rem" viewBox="0 0 10 10"
-                    xmlns="http://www.w3.org/2000/svg">
+                <svg [style.color]="wsIconState" style="margin-left: .5rem;" width="2rem" height="2rem"
+                    viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
                     <path fill="currentColor"
                         d="M5 10A5 5 0 1 0 5 0a5 5 0 0 0 0 10Zm2.1-5.9L4.85 6.35a.5.5 0 0 1-.7 0l-1-1a.5.5 0 0 1 .7-.7l.65.64 1.9-1.9a.5.5 0 0 1 .7.71Z">
                     </path>
@@ -44,7 +44,12 @@
             </div>
 
 
-            <fluent-button appearance="accent" (click)="socketConnect()">Connect</fluent-button>
+
+            <div *ngIf="this.ws?.readyState === 0" class="ws-connection-bar"></div>
+            <fluent-button id="connect-button" appearance="accent" (click)="socketConnect()" disabled="{{this.ws?.readyState === 0 || this.ws?.readyState === 2}}">
+                
+            </fluent-button>
+
         </div>
         <div style="align-self: flex-end; margin-left: auto; margin-bottom: 0.5rem;">
             <fluent-switch id="auto-reconnect-toggle">Auto Reconnect</fluent-switch>
@@ -54,7 +59,8 @@
         <fluent-tabs activeid="entrees">
             <fluent-tab id="select-query">Select Query</fluent-tab>
             <fluent-tab id="create-query">Create Query</fluent-tab>
-
+            <fluent-tab id="list-peer-tab">List Peers</fluent-tab>
+            
             <fluent-tab-panel id="select-query">
                 <fluent-card>
                     <div style="display: flex; flex-direction: row;">
@@ -65,22 +71,22 @@
                                 <fluent-tree-item selected>Daisy</fluent-tree-item>
                                 <fluent-tree-item>Sunflower</fluent-tree-item>
                                 <fluent-tree-item>Rose</fluent-tree-item>
-                                
+
                                 <fluent-tree-item>Petunia</fluent-tree-item>
                                 <fluent-tree-item>Tulip</fluent-tree-item>
                                 <fluent-tree-item>Sunflower</fluent-tree-item>
-                               
+
                                 <fluent-tree-item>Rose</fluent-tree-item>
                                 <fluent-tree-item>Petunia</fluent-tree-item>
                                 <fluent-tree-item>Tulip</fluent-tree-item>
 
                             </fluent-tree-view>
                         </div>
-                        
-                        
+
+
                         <div class="select-query-body">
-                            <div>
-                                <p id="sq-body-text">                                   
+                            <div id="sq-body-text-container">
+                                <p id="sq-body-text">
                                 </p>
                             </div>
                             <div class="select-query-buttons">
@@ -89,16 +95,25 @@
                             </div>
                         </div>
                     </div>
-                        
-                    
+
+
                 </fluent-card>
             </fluent-tab-panel>
             <fluent-tab-panel id="create-queryl">
                 <fluent-card>
                     Create Query
-                   
 
-                   
+
+
+                </fluent-card>
+            </fluent-tab-panel>
+
+            <fluent-tab-panel id="list-peer-tab">
+                <fluent-card>
+                   List Peer on Secret Channel
+
+
+
                 </fluent-card>
             </fluent-tab-panel>
 
