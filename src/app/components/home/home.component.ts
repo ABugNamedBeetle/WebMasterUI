@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { baseLayerLuminance, Button, StandardLuminance, Switch } from '@fluentui/web-components';
+import { baseLayerLuminance, Button, StandardLuminance, Switch, TextField} from '@fluentui/web-components';
+
 import { Combobox } from '@fluentui/web-components';
 import { WebClientDetail } from 'src/app/models/webClientDetail';
+import { MessageType, SocketMessage, SocketMessageInit } from 'src/app/models/websocketMessage';
 
 @Component({
   selector: 'home',
@@ -19,6 +21,8 @@ export class HomeComponent implements OnInit {
   ws: WebSocket | null = null;
   wsIconState: string = "red";
   wsButton!: Button;
+  wsSecretKey!: TextField;
+  wsSecretKeyTogggleShow!: Button;
 
   sqBodyText!: HTMLParagraphElement;
   sqBodyTextContainer!: HTMLDivElement;
@@ -32,7 +36,10 @@ export class HomeComponent implements OnInit {
     this.sqBodyText = <HTMLParagraphElement>document.getElementById("sq-body-text");
     this.sqBodyTextContainer = <HTMLParagraphElement>document.getElementById("sq-body-text-container");
     this.wsButton = <Button>document.getElementById("connect-button");
+    this.wsSecretKey = <TextField>document.getElementById("websocket-secretkey")
+    this.wsSecretKeyTogggleShow = <Button>document.getElementById("websocket-secretkey-toggle");
     
+
     this.wsButton.textContent = "Connect";
     
     this.sqBodyText.innerHTML = ">Hello Command<br>";
@@ -42,7 +49,8 @@ export class HomeComponent implements OnInit {
       this.toggleDarkMode();
     };
 
-
+    SocketMessageInit.initSecretKeyHash(this.wsSecretKey.currentValue);
+    
 
 
   }
@@ -77,6 +85,14 @@ export class HomeComponent implements OnInit {
     this.wsClient.webSecretChannel = (<Combobox>event!.target).currentValue;
   }
 
+  onWSSecretKeyToggle(){
+    
+    this.wsSecretKey.type = this.wsSecretKey.type === "text"? "password" : "text";
+  }
+
+  SaveSecretKey(){
+    
+  }
   socketConnect() {
     this.wsClient.webSocketHost = this.wsHost.currentValue;
     this.wsClient.webClientName = this.wsCName.currentValue;
@@ -89,6 +105,7 @@ export class HomeComponent implements OnInit {
 
         this.ws.onclose = (ev: CloseEvent) => {
           this.wsIconState = "red";
+          this.wsButton.textContent = "Connect";
           this.sqBodyText.innerHTML += `<span style="color: red;  font-family: monospace;">>WebSocket Closed</span><br>`;
         }
         this.ws.onopen = (event: Event) => {
@@ -111,6 +128,14 @@ export class HomeComponent implements OnInit {
       this.wsButton.textContent = "Connect";
     }
 
+  }
+
+  sendWSMessage(){
+    let msg = new SocketMessage(MessageType.REQUEST, 'slaveCommander', this.wsClient.webClientName);
+    msg.setMessage("start c @ /// ehco \"hello\" sldnfale aekl owe f");
+
+    console.log(msg);
+    this.ws?.send(msg.preparePacket());
   }
 
 

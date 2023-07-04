@@ -16,7 +16,8 @@
         <h3 style="font-weight: 600;">Select websocket:</h3>
         <fluent-combobox id="websocket-host-selector" (ngModal)="onWSUrlChange($event)">
             <fluent-option>simple-web-socket-abnb.onrender.com</fluent-option>
-            <fluent-option selected>simple-web-socket-abnb.glitch.me</fluent-option>
+            <fluent-option >simple-web-socket-abnb.glitch.me</fluent-option>
+            <fluent-option selected>localhost:5000</fluent-option>
         </fluent-combobox>
 
         <fluent-combobox id="websocket-client-selector" style="margin-top: 1rem;" (change)="onWSClientChange($event)">
@@ -28,6 +29,28 @@
             <fluent-option selected>my-secret-channel</fluent-option>
 
         </fluent-combobox>
+        <h4 style="font-weight: 600;">Secret Key:</h4>
+        <div class="secretkey-body">
+            
+            <fluent-text-field id="websocket-secretkey" appearance="outline" 
+                               placeholder="Password" type="password" value="password"
+                               style="flex-grow: 1;" >                
+            </fluent-text-field>
+            <fluent-button id="websocket-secretkey-toggle" appearance="accent" color="red" (click)="onWSSecretKeyToggle()">
+                <svg *ngIf='this.wsSecretKey.type!=="text"'  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"></path>
+                    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+                </svg>
+
+                <svg *ngIf='this.wsSecretKey.type==="text"' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+                    <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"></path>
+                    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"></path>
+                </svg>
+
+            </fluent-button>
+            <fluent-button appearance="accent" (click)="SaveSecretKey()">Save</fluent-button>
+        </div>
+
 
         <h3 style="font-weight: 600;">Options</h3>
         <div style="display: flex; flex-direction: row; justify-content: space-between; margin-bottom: 1rem;;">
@@ -55,7 +78,8 @@
             <fluent-switch id="auto-reconnect-toggle">Auto Reconnect</fluent-switch>
         </div>
 
-        <div class="divider" style="margin: 1remx 0;"></div>
+        <div class="divider" style="margin: 1rem 0;"></div>
+        <div style="align-self: end;"> Peer : salveCommander</div>
         <fluent-tabs activeid="entrees">
             <fluent-tab id="select-query">Select Query</fluent-tab>
             <fluent-tab id="create-query">Create Query</fluent-tab>
@@ -63,9 +87,9 @@
             
             <fluent-tab-panel id="select-query">
                 <fluent-card>
-                    <div style="display: flex; flex-direction: row;">
+                    <div style="display: flex; flex-direction: row; gap: 1rem;">
 
-                        <div style="flex-shrink: 1; width: 30%;">
+                        <div style="width: 30%;">
                             <p style="font-size: .8rem; font-weight: 700;">Select command to Launch</p>
                             <fluent-tree-view class="sq-command-view">
                                 <fluent-tree-item selected>Daisy</fluent-tree-item>
@@ -90,7 +114,7 @@
                                 </p>
                             </div>
                             <div class="select-query-buttons">
-                                <fluent-button appearance="accent">Launch</fluent-button>
+                                <fluent-button appearance="accent"  (click)="sendWSMessage()">Launch</fluent-button>
 
                             </div>
                         </div>
