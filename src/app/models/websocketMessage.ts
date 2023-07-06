@@ -25,6 +25,7 @@ export class SocketMessage {
     private integrity: string = '';
     private correlationID: string | null = null;
 
+    
     constructor(_type: MessageType, _destination: string, _origin: string) {
         this.type = _type;
         this.destination = _destination;
@@ -37,11 +38,17 @@ export class SocketMessage {
     }
 
     setMessage(msg: string) {
-        this.message = msg;
+        this.message = enc.Base64.stringify(enc.Utf8.parse(msg));;
     }
+    //refactor for valid message, is ValidBAse64 and throw error
 
     getMessage() {
+        if(this.message !== null){
 
+            return enc.Utf8.stringify(enc.Base64.parse(this.message));
+        }else{
+            throw  new Error("Massage Failed to Valid text.");
+        }
     }
 
     preparePacket() {
@@ -51,8 +58,8 @@ export class SocketMessage {
 
             if (this.message !== null && this.message.trim().length > 0) {
 
-                this.message = enc.Base64.stringify(enc.Utf8.parse(this.message));
-                this.integrity = this.encryptMessage(SocketMessageInit.secretKeyHash, this.message!);
+                
+                this.integrity = this.generateHash(SocketMessageInit.secretKeyHash, this.message!);
                 this.correlationID = this.generateHashKeyFromTime(Math.floor(Date.now()));
                  return JSON.stringify(this);
 
@@ -70,7 +77,7 @@ export class SocketMessage {
 
 
 
-    encryptMessage(secretKeyHash: string, encodedMessage: string): string {
+    private generateHash(secretKeyHash: string, encodedMessage: string): string {
 
         const combinedStr = secretKeyHash + encodedMessage;
 
@@ -95,6 +102,14 @@ export class SocketMessage {
     }
 
 
+     static parseJSON(validJSON: string){
+        let obj = <SocketMessage>JSON.parse(validJSON);
+        let n = new SocketMessage(obj.type, obj.destination, obj.origin);
+        n.message = obj.message;
+        n.integrity = obj.integrity;
+        n.correlationID = obj.correlationID;
+        return n;
+    }
 
 
 
@@ -102,6 +117,11 @@ export class SocketMessage {
 
 export enum MessageType {
     HEALTH = "health",
+    
+    LISTPEER="listpeer",  //list all peer
+    CREATESESSION = "createsession", //create sesison with peer in message type
+    SESSIONCREATED = "sessioncreated",
+    SESSIONHEALTH = "sessionhealth",
     //input types
     REQUEST = "request",
     BROADCAST = "broadcast",

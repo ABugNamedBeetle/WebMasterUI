@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { baseLayerLuminance, Button, StandardLuminance, Switch, TextField} from '@fluentui/web-components';
+import { baseLayerLuminance, Button, Listbox, StandardLuminance, Switch, TextField} from '@fluentui/web-components';
 
 import { Combobox } from '@fluentui/web-components';
+import { SQIconType, SQMessageType, SQText } from 'src/app/models/sqText';
 import { WebClientDetail } from 'src/app/models/webClientDetail';
 import { MessageType, SocketMessage, SocketMessageInit } from 'src/app/models/websocketMessage';
-
+import { environment, WEB_SOCKET_LIST } from 'src/environments/environment';
 @Component({
   selector: 'home',
   templateUrl: './home.component.html',
@@ -12,7 +13,7 @@ import { MessageType, SocketMessage, SocketMessageInit } from 'src/app/models/we
 })
 export class HomeComponent implements OnInit {
 
-
+  webSocketList: Map<string, boolean> = WEB_SOCKET_LIST;
   sw01!: Switch;
   wsHost!: Combobox;
   wsCName!: Combobox;
@@ -27,8 +28,10 @@ export class HomeComponent implements OnInit {
   sqBodyText!: HTMLParagraphElement;
   sqBodyTextContainer!: HTMLDivElement;
   wsClient: WebClientDetail = new WebClientDetail();
+  sqtbody: Array<SQText> = [];
 
   ngOnInit(): void {
+    console.log("isProd : "+environment.production);
     this.sw01 = <Switch>document.getElementById("dark-mode-toggle");
     this.wsHost = <Combobox>document.getElementById("websocket-host-selector");
     this.wsCName = <Combobox>document.getElementById("websocket-client-selector");
@@ -39,10 +42,10 @@ export class HomeComponent implements OnInit {
     this.wsSecretKey = <TextField>document.getElementById("websocket-secretkey")
     this.wsSecretKeyTogggleShow = <Button>document.getElementById("websocket-secretkey-toggle");
     
-
+    console.log(this.webSocketList);
     this.wsButton.textContent = "Connect";
     
-    this.sqBodyText.innerHTML = ">Hello Command<br>";
+    //this.sqBodyText.innerHTML = ">Hello Command<br>";
        
     this.sw01.onclick = (event) => {
       console.log(this.sw01.checked);
@@ -50,7 +53,13 @@ export class HomeComponent implements OnInit {
     };
 
     SocketMessageInit.initSecretKeyHash(this.wsSecretKey.currentValue);
-    
+    this.sqtbody.push(new SQText("Hello Command",SQIconType.SELF,SQIconType.SELF.toLowerCase()));
+    // this.webSocketList.forEach((isSelected: boolean, wsName: string)=>{
+    //   if(isSelected){
+        
+    //     this.wsHost.options
+    //   }aaa
+    // })
 
 
   }
@@ -101,22 +110,28 @@ export class HomeComponent implements OnInit {
     if (this.ws?.readyState !== WebSocket.OPEN) {
 
       try {
-        this.ws = new WebSocket(this.wsClient.wsUrl());
+        this.ws = new WebSocket(this.wsClient.wsUrl(environment.production? true : false));
 
         this.ws.onclose = (ev: CloseEvent) => {
           this.wsIconState = "red";
           this.wsButton.textContent = "Connect";
-          this.sqBodyText.innerHTML += `<span style="color: red;  font-family: monospace;">>WebSocket Closed</span><br>`;
+          this.sqtbody.push(this.createSQMessage(SQMessageType.SELF,"WebSocket Closed", "red"));
         }
         this.ws.onopen = (event: Event) => {
           this.wsIconState = "green";
-          this.wsButton.textContent = "Disconnect";
-          this.sqBodyText.innerHTML = `<span style="color: green;  font-family: monospace;">>WebSocket Opened</span><br>`;
+          this.wsButton.textContent = "Disconnect";          
+          this.sqtbody.push(this.createSQMessage(SQMessageType.SELF,"WebSocket Opened", "green"));
         }
         this.ws.onmessage = (event: MessageEvent) => {
           console.log(event.data);
-          this.sqBodyText.innerHTML += `<span style="font-family: monospace;">>${event.data}</span><br>`;
-          this.sqBodyTextContainer.scrollTop = this.sqBodyTextContainer.scrollHeight;
+          let sm: SocketMessage = SocketMessage.parseJSON(event.data);
+          
+          console.log(sm);
+          this.sqtbody.push(this.createSQMessage(SQMessageType.SERVER,sm.getMessage()));
+          setTimeout(() => {
+            
+            this.sqBodyTextContainer.scrollTop = this.sqBodyTextContainer.scrollHeight;
+          }, 250);
         }
 
       } catch (error) {
@@ -138,7 +153,38 @@ export class HomeComponent implements OnInit {
     this.ws?.send(msg.preparePacket());
   }
 
+  createSQMessage(sqmt: SQMessageType, stringText: string, color: string| null = null){
+    let typeString = "";
+    let colorString = "";
+    let cssSuffix = "";
+    switch (sqmt) {
+      case SQMessageType.PEER_REQ :
+        typeString = "PEER";
+        cssSuffix = "req"
+        break;
+    
+        case SQMessageType.PEER_RES :
+        typeString = "PEER"
+        cssSuffix = "res"
+        break;
+
+        case SQMessageType.SERVER :
+        typeString = "SRVR";
+        cssSuffix = "srvr";
+        break;
+        
+      default:
+        typeString = "SELF";
+        cssSuffix = "self";
+        break;
+    }
+
+    return new SQText(stringText,typeString,cssSuffix,color );
+
+  }
+
 
 
 
 }
+

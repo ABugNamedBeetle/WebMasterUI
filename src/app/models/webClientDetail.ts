@@ -11,9 +11,9 @@ export class WebClientDetail {
                this.webSecretChannel === '';
     }
 
-    wsUrl(): string{
+    wsUrl(isSecured: boolean): string{
         if(!this.empty()){
-            return `ws://${this.webSocketHost}/${this.webClientName}?channel=${this.webSecretChannel}&type=MASTER`;
+            return ` ${isSecured?"wss":"ws"}://${this.webSocketHost}/${this.webClientName}?channel=${this.webSecretChannel}&type=MASTER`;
         }else{
             throw new Error("WebClient is Invalid");
         }
