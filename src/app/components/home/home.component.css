@@ -19,11 +19,6 @@ p {
   font-size: initial;
 }
 
-h2 {
-  font-size: var(--type-ramp-plus-5-font-size);
-  line-height: var(--type-ramp-plus-5-line-height);
-}
-
 h3,
 h4 {
   margin-top: 1rem;
@@ -51,7 +46,6 @@ fluent-divider {
  flex-direction: row;
  gap: 1rem;
 }
-
 
 .ws-connection-bar {
   --color1: white;
@@ -81,6 +75,24 @@ fluent-divider {
   100% {
     background-position-x: 2.82843rem;
   }
+}
+.splitbutton-container{
+  display: inline-flex;
+  align-items: center;
+  height: 2rem;
+    width: 1.5rem;
+}
+
+
+
+.splitbutton-checkbox{
+  display: none;
+  border-radius: calc(var(--control-corner-radius) * 1px) 0px 0px calc(var(--control-corner-radius) * 1px);
+                                                               
+}
+
+span.splitbutton-icon{
+  
 }
 
 .peer-status-body{
@@ -184,3 +196,22 @@ span.message-icon-color-srvr{
   background:hsla(342,100%,62%,0.62);
 }
 
+
+.list-peer-p-head{
+  font-size: 14px; 
+  font-family: 
+  monospace; font-weight: bold; 
+  margin: 0 0 .5rem 0; 
+}
+.list-peer-body{
+display: flex; 
+                                flex-direction: row; 
+                                column-gap: 1rem; 
+                                
+}
+.list-peer-peerlist{
+  flex-grow: 1; 
+  border: 1px solid var(--neutral-stroke-active);
+  padding: 0.5rem;
+  border-radius: calc(var(--control-corner-radius) * 1px);
+}

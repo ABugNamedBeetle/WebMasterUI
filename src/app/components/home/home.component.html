@@ -15,7 +15,8 @@
     <fluent-card>
         <h3 style="font-weight: 600;">Select websocket:</h3>
         <fluent-combobox id="websocket-host-selector" (ngModal)="onWSUrlChange($event)" placeholder="Select">
-            <fluent-option *ngFor='let wsl of this.webSocketList | keyvalue' [attr.selected]="wsl.value" >{{wsl.key}}</fluent-option>
+            <fluent-option *ngFor='let wsl of this.webSocketList | keyvalue'
+                [attr.selected]="wsl.value">{{wsl.key}}</fluent-option>
 
         </fluent-combobox>
 
@@ -55,7 +56,37 @@
                 </svg>
 
             </fluent-button>
-            <fluent-button appearance="accent" (click)="SaveSecretKey()">Save</fluent-button>
+            <div>
+                <fluent-button appearance="accent" (click)="SaveSecretKey()">Save</fluent-button>
+
+                <!-- TO ADD a DROP MENU (TO BE DONE LATER)<label class="splitbutton-container">
+                        <input type="checkbox" class="splitbutton-checkbox">
+                        <span class="splitbutton-icon">
+                          <svg fill="currentColor" class="checkbox-icon" aria-hidden="true" width="12px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.85 7.65c.2.2.2.5 0 .7l-5.46 5.49a.55.55 0 0 1-.78 0L4.15 8.35a.5.5 0 1 1 .7-.7L10 12.8l5.15-5.16c.2-.2.5-.2.7 0Z" fill="currentColor"></path>
+                          </svg>
+                        </span>
+                        
+                    </label> -->
+                <!-- <fluent-menu>
+                        <fluent-menu-item>Menu item 1</fluent-menu-item>
+                        <fluent-menu-item>Menu item 2
+                        <fluent-menu>
+                            <fluent-menu-item>Nested Menu item 2.1</fluent-menu-item>
+                            <fluent-menu-item>Nested Menu item 2.2</fluent-menu-item>
+                            <fluent-menu-item>Nested Menu item 2.3</fluent-menu-item>
+                        </fluent-menu>
+                        </fluent-menu-item>
+                        <fluent-menu-item disabled="true">Menu item 3</fluent-menu-item>
+                        <fluent-menu-item>
+                        Menu item 4
+                        <div slot="end">Shortcut text</div>
+                        </fluent-menu-item>
+                    </fluent-menu> -->
+            </div>
+
+
+
         </div>
 
 
@@ -87,14 +118,24 @@
         </div>
 
         <div class="divider" style="margin: .5rem 0;"></div>
-        <div class="peer-status-body"> 
-            <div style=" background-color: hsl(147 160% 66% / 1); width: .75rem; aspect-ratio: 1; border-radius: .75rem;"></div>
-            <div><span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Peer : </span><span>slaveCommander</span>
-                 <span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Last Health : </span><span>11:10PM</span></div>
+        <div class="peer-status-body">
+            <div
+                style=" background-color: hsl(147 160% 66% / 1); width: .75rem; aspect-ratio: 1; border-radius: .75rem;">
+            </div>
+            <div><span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Peer :
+                </span><span>slaveCommander</span>
+                <span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Last Health :
+                </span><span>11:10PM</span>
+            </div>
         </div>
-        
+
         <fluent-tabs activeid="entrees">
-            <fluent-tab id="select-query">Select Query</fluent-tab>
+            <fluent-tab id="select-query" (click)="this.sqUnAttndCount = 0">
+                <span>
+                <fluent-badge *ngIf="this.sqUnAttndCount > 0" appearance="accent">{{this.sqUnAttndCount}}</fluent-badge>
+                Select Query
+                </span>
+            </fluent-tab>
             <fluent-tab id="create-query">Create Query</fluent-tab>
             <fluent-tab id="list-peer-tab">List Peers</fluent-tab>
 
@@ -123,13 +164,15 @@
 
                         <div class="select-query-body">
                             <div id="sq-body-text-container">
-                                <p id="sq-body-text" >
-                                    
-                                        <span *ngFor="let t of this.sqtbody" class="message-status-body" [style.color]="t.textColor">
-                                            <span class="message-icon-status message-icon-color-{{t.cssSuffix}}">{{ t.iconType }}</span>
-                                            {{t.text}}
-                                            <br>
-                                        </span>
+                                <p id="sq-body-text">
+
+                                    <span *ngFor="let t of this.sqtbody" class="message-status-body"
+                                        [style.color]="t.textColor">
+                                        <span class="message-icon-status message-icon-color-{{t.cssSuffix}}">{{
+                                            t.iconType }}</span>
+                                        {{t.text}}
+                                        <br>
+                                    </span>
                                 </p>
                             </div>
                             <div class="select-query-buttons">
@@ -142,7 +185,7 @@
 
                 </fluent-card>
             </fluent-tab-panel>
-            <fluent-tab-panel id="create-queryl">
+            <fluent-tab-panel id="create-query">
                 <fluent-card>
                     Create Query
 
@@ -152,12 +195,43 @@
             </fluent-tab-panel>
 
             <fluent-tab-panel id="list-peer-tab">
+
+
                 <fluent-card>
-                    List Peer on Secret Channel
+                    <p  class="list-peer-p-head">Peer List :: {{this.peerList.length}}</p>
+                    <div class="list-peer-body">
+                        
+                        <div class="list-peer-peerlist">
+                            
+                                
+                            <fluent-tree-view  >
+                                <fluent-tree-item *ngFor="let p of this.peerList" [attr.selected]="this.peerList.indexOf(p) == 0">{{p}}</fluent-tree-item>
+                                
+                            </fluent-tree-view>
+                        </div>
+                            
+                        <div style="flex: 0 1;">
+                            <fluent-button appearance="accent" (click)="this.loadPeers()" style="width: 100%; margin-bottom: 1rem;">Refresh</fluent-button>
+                            <fluent-button appearance="accent" >Connect</fluent-button>
 
-
+                        </div>
+                        
+                    </div>
+                    
 
                 </fluent-card>
+
+
+
+
+
+
+
+
+
+
+
+
             </fluent-tab-panel>
 
         </fluent-tabs>
@@ -168,8 +242,10 @@
                 placeholder="Enter Some Text"></fluent-text-field>
             <fluent-button appearance="accent" (click)="onClick()">Click Me</fluent-button>
         </fluent-card> -->
+
     </fluent-card>
 </div>
+
 
 <!-- 
 <div class="web-container">

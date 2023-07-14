@@ -19,6 +19,7 @@ export class SocketMessage {
 
 
     type: MessageType;
+    subType: MessageSubType = MessageSubType.EMPTY;
     private message: string | null = null;
     private destination: string;
     private origin: string;
@@ -38,7 +39,12 @@ export class SocketMessage {
     }
 
     setMessage(msg: string) {
-        this.message = enc.Base64.stringify(enc.Utf8.parse(msg));;
+        this.message = enc.Base64.stringify(enc.Utf8.parse(msg));
+    }
+
+    setMessageSubType(sub: MessageSubType){
+        this.subType = sub;
+        return this;
     }
     //refactor for valid message, is ValidBAse64 and throw error
 
@@ -108,25 +114,39 @@ export class SocketMessage {
         n.message = obj.message;
         n.integrity = obj.integrity;
         n.correlationID = obj.correlationID;
+        n.subType = obj.subType;
         return n;
     }
 
 
 
 }
-
-export enum MessageType {
+  
+export enum MessageType{
     HEALTH = "health",
-    
-    LISTPEER="listpeer",  //list all peer
-    CREATESESSION = "createsession", //create sesison with peer in message type
-    SESSIONCREATED = "sessioncreated",
-    SESSIONHEALTH = "sessionhealth",
+    HEALTHRESPONSE = "healthresponse",
     //input types
     REQUEST = "request",
+   
+     //peer health
     BROADCAST = "broadcast",
     //output types
     RESPONSE = "response"
+}
+
+export enum MessageSubType{
+    //reuests
+    CREATESESSION = "createsession", //create sesison with peer in message type
+   
+    PEERLIST="peerlist",
+    
+    //response
+    SESSIONCREATED = "sessioncreated",
+    LISTPEER="listpeer",
+
+    //neural
+    SESSIONHEALTH = "sessionhealth", 
+    EMPTY = "empty"
 }
 
 

@@ -1,17 +1,12 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { provideFluentDesignSystem, 
-        fluentCard,
-        fluentButton,
-        fluentTextField,
-        fluentSwitch,
-        fluentSelect,
-        fluentOption,
-        fluentSlider,
-        fluentSliderLabel,
+        
         PaletteRGB,
         accentPalette,
         SwatchRGB,
-        baseLayerLuminance,StandardLuminance, allComponents, accentForegroundActive, neutralStrokeControlActive, neutralBaseColor
+        allComponents,
+        density,
+        bodyFont
        
         
         
@@ -29,17 +24,16 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 
 
   
-let ds = provideFluentDesignSystem().register(allComponents                               
-                                      
-  );
+let ds = provideFluentDesignSystem().register(allComponents);
   
                         
 let r = parseColorHexRGB("#00FFE1")!.r; 
 let g = parseColorHexRGB("#00FFE1")!.g; 
-let b = parseColorHexRGB("#00FFE1")!.b;                                     
+let b = parseColorHexRGB("#00FFE1")!.b;    
+// density.setValueFor(document.body, 0);
+                    
 accentPalette.setValueFor(
- 
   document.body,
-  PaletteRGB.from(SwatchRGB.from({r,g,b}))
+  PaletteRGB.from(SwatchRGB.from({r,g,b})) //, {preserveSource:true, stepContrastRamp: 0.03, stepContrast:1.03}
 );
 
