@@ -56,6 +56,9 @@ export class SocketMessage {
             throw  new Error("Massage Failed to Valid text.");
         }
     }
+    getOrigin(){
+        return this.origin;
+    }
 
     preparePacket() {
 

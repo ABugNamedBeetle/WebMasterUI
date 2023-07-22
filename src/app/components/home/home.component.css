@@ -115,6 +115,20 @@ span.splitbutton-icon{
     /* box-shadow: var(--elevation-shadow-card-rest); */
 
 }
+
+.peer-status-light{
+  
+   width: .75rem; aspect-ratio: 1; 
+   border-radius: .75rem;
+}
+.peer-status-light[status="con"]{
+  background-color: hsl(147 100% 66% / 1);
+}
+.peer-status-light[status="dcon"]{
+  background-color: hsl(147 0% 66% / 1);
+}
+
+
 .peer-status-body>*{
   font-size: .75rem;
 }

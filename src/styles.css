@@ -2,7 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 
-
+/* @font-face {
+    font-family: 'Quicksand';
+    src: url('./assets/quicksand-regular.woff2') format('woff2');
+  } */
 
 *{
     box-sizing: border-box;

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { baseLayerLuminance, Button, Listbox, StandardLuminance, Switch, switchStyles, TextField } from '@fluentui/web-components';
+import { baseLayerLuminance, Button, Listbox, StandardLuminance, Switch, switchStyles, TextField, TreeItem, TreeView } from '@fluentui/web-components';
 
 import { Combobox } from '@fluentui/web-components';
 import { SQIconType, SQMessageType, SQText } from 'src/app/models/sqText';
@@ -32,6 +32,12 @@ export class HomeComponent implements OnInit {
   sqtbody: Array<SQText> = [];  //select query text message body that records req and resp
   peerList: Array<string> = [];
 
+  cPeerStatusConnected: boolean = false;
+  cPeerName = "Connect Peer";
+  cLastHealth = "00:00AM"
+  peerOnChnlList!: TreeView; 
+
+
   ngOnInit(): void {
     console.log("isProd : " + environment.production);
     this.sw01 = <Switch>document.getElementById("dark-mode-toggle");
@@ -43,7 +49,7 @@ export class HomeComponent implements OnInit {
     this.wsButton = <Button>document.getElementById("connect-button");
     this.wsSecretKey = <TextField>document.getElementById("websocket-secretkey")
     this.wsSecretKeyTogggleShow = <Button>document.getElementById("websocket-secretkey-toggle");
-
+    this. peerOnChnlList = <TreeView> document.getElementById("peer-tree-view-list");
     console.log(this.webSocketList);
     this.wsButton.textContent = "Connect";
 
@@ -187,6 +193,20 @@ export class HomeComponent implements OnInit {
     console.log(msg);
     this.ws?.send(msg.preparePacket());
   }
+  sendPeerSessionRequest(){
+    let selectedPeerName = this.peerOnChnlList.currentSelected?.textContent?.trim();
+    console.log(selectedPeerName);
+    if(selectedPeerName !== undefined && selectedPeerName !== null && this.ws?.readyState === WebSocket.OPEN){
+      let createSessionMsg = new SocketMessage(MessageType.REQUEST, selectedPeerName, this.wsClient.webClientName);
+      createSessionMsg.setMessageSubType(MessageSubType.CREATESESSION);
+      createSessionMsg.setMessage(selectedPeerName);
+      console.log(createSessionMsg);
+      this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_REQ, `Create Session Sent to ${selectedPeerName}`));
+      this.ws?.send(createSessionMsg.preparePacket());
+
+    }
+
+  }
 
   messageWorker(data: string) {
     let sm: SocketMessage = SocketMessage.parseJSON(data);
@@ -215,9 +235,16 @@ export class HomeComponent implements OnInit {
         //update the peer list
         this.peerList.push(...<Array<string>>JSON.parse(sm.getMessage()));
         //SQ body for the response that the peer list receive from server
-       
         this.sqtMessageWorker(this.createSQMessage(SQMessageType.SERVER, `${this.peerList.length} Peer Updated`));
         console.log("PEER LIST" + this.peerList)
+        break;
+      }
+
+      case MessageSubType.SESSIONCREATED: {
+
+        this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_RES, `Session Created Recevied from ${sm.getOrigin()}`));
+        this.cPeerName = sm.getOrigin();
+        this.cPeerStatusConnected = true;
         break;
       }
 

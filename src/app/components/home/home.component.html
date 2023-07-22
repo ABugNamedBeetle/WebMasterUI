@@ -16,7 +16,7 @@
         <h3 style="font-weight: 600;">Select websocket:</h3>
         <fluent-combobox id="websocket-host-selector" (ngModal)="onWSUrlChange($event)" placeholder="Select">
             <fluent-option *ngFor='let wsl of this.webSocketList | keyvalue'
-                [attr.selected]="wsl.value">{{wsl.key}}</fluent-option>
+                [attr.selected]= 'wsl.value ? "":null' >{{wsl.key}}</fluent-option>
 
         </fluent-combobox>
 
@@ -106,7 +106,7 @@
 
 
 
-            <div *ngIf="this.ws?.readyState === 0" class="ws-connection-bar"></div>
+            <!-- <div *ngIf="this.ws?.readyState === 0" class="ws-connection-bar"></div> -->
             <fluent-button id="connect-button" appearance="accent" (click)="socketConnect()"
                 disabled="{{this.ws?.readyState === 0 || this.ws?.readyState === 2}}">
 
@@ -119,13 +119,12 @@
 
         <div class="divider" style="margin: .5rem 0;"></div>
         <div class="peer-status-body">
-            <div
-                style=" background-color: hsl(147 160% 66% / 1); width: .75rem; aspect-ratio: 1; border-radius: .75rem;">
+            <div class="peer-status-light" [attr.status]='this.cPeerStatusConnected? "con":"dcon"'>
             </div>
             <div><span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Peer :
-                </span><span>slaveCommander</span>
+                </span><span>{{this.cPeerName}}</span>
                 <span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Last Health :
-                </span><span>11:10PM</span>
+                </span><span>{{this.cLastHealth}}</span>
             </div>
         </div>
 
@@ -204,15 +203,19 @@
                         <div class="list-peer-peerlist">
                             
                                 
-                            <fluent-tree-view  >
-                                <fluent-tree-item *ngFor="let p of this.peerList" [attr.selected]="this.peerList.indexOf(p) == 0">{{p}}</fluent-tree-item>
+                            <fluent-tree-view id="peer-tree-view-list" >
+                                <!-- [attr.selected]="this.peerList.indexOf(p) === 0" -->
+                                <fluent-tree-item *ngFor="let p of this.peerList" [attr.selected]='this.peerList.indexOf(p) === 0 ? "":null' 
+                                [attr.aria-selected]='this.peerList.indexOf(p) === 0'>
+                                    {{p}}
+                                </fluent-tree-item>
                                 
                             </fluent-tree-view>
                         </div>
                             
                         <div style="flex: 0 1;">
                             <fluent-button appearance="accent" (click)="this.loadPeers()" style="width: 100%; margin-bottom: 1rem;">Refresh</fluent-button>
-                            <fluent-button appearance="accent" >Connect</fluent-button>
+                            <fluent-button appearance="accent" (click)="this.sendPeerSessionRequest()">Connect</fluent-button>
 
                         </div>
                         
