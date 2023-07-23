@@ -106,7 +106,8 @@
 
 
 
-            <!-- <div *ngIf="this.ws?.readyState === 0" class="ws-connection-bar"></div> -->
+            <div *ngIf="this.ws?.readyState === 0" class="ws-connection-bar"></div>   <!-- do not delete, loading pattern while connecting  -->
+          
             <fluent-button id="connect-button" appearance="accent" (click)="socketConnect()"
                 disabled="{{this.ws?.readyState === 0 || this.ws?.readyState === 2}}">
 
@@ -118,14 +119,20 @@
         </div>
 
         <div class="divider" style="margin: .5rem 0;"></div>
+        
+        <!-- peer bar with green status led icon -->
         <div class="peer-status-body">
             <div class="peer-status-light" [attr.status]='this.cPeerStatusConnected? "con":"dcon"'>
             </div>
-            <div><span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Peer :
-                </span><span>{{this.cPeerName}}</span>
-                <span style="padding-left: .8rem; opacity: 50%; font-style: italic;">Last Health :
-                </span><span>{{this.cLastHealth}}</span>
+            <div style="padding: 0 .8rem;">
+                <span style="opacity: 50%; font-style: italic;">Peer : </span>
+                <span>{{this.cPeerName}}</span>
+                
+                <span style="opacity: 50%; margin-left: 0.6rem; font-style: italic;">Health : </span>
+                <span>{{this.cLastHealth}}</span>
             </div>
+            <div *ngIf = "this.cPeerStatusConnected" class="pie animate" [style.animation-duration]='10+"s"'></div>
+            <!-- <div *ngIf = "!this.cPeerStatusConnected" [style]=""></div> not doing this for now -->
         </div>
 
         <fluent-tabs activeid="entrees">

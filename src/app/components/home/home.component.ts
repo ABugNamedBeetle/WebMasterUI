@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
   cPeerStatusConnected: boolean = false;
   cPeerName = "Connect Peer";
   cLastHealth = "00:00AM"
-  peerOnChnlList!: TreeView; 
+  peerOnChnlList!: TreeView;
 
 
   ngOnInit(): void {
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
     this.wsButton = <Button>document.getElementById("connect-button");
     this.wsSecretKey = <TextField>document.getElementById("websocket-secretkey")
     this.wsSecretKeyTogggleShow = <Button>document.getElementById("websocket-secretkey-toggle");
-    this. peerOnChnlList = <TreeView> document.getElementById("peer-tree-view-list");
+    this.peerOnChnlList = <TreeView>document.getElementById("peer-tree-view-list");
     console.log(this.webSocketList);
     this.wsButton.textContent = "Connect";
 
@@ -123,6 +123,9 @@ export class HomeComponent implements OnInit {
         this.ws.onclose = (ev: CloseEvent) => {
           this.wsIconState = "red";
           this.wsButton.textContent = "Connect";
+          this.cPeerStatusConnected = false;
+          this.cPeerName = "Connect Peer";
+          this.cLastHealth = "00:00AM"
           this.sqtbody.push(this.createSQMessage(SQMessageType.SELF, "WebSocket Closed", "red"));
         }
         this.ws.onopen = (event: Event) => {
@@ -193,10 +196,10 @@ export class HomeComponent implements OnInit {
     console.log(msg);
     this.ws?.send(msg.preparePacket());
   }
-  sendPeerSessionRequest(){
+  sendPeerSessionRequest() {
     let selectedPeerName = this.peerOnChnlList.currentSelected?.textContent?.trim();
     console.log(selectedPeerName);
-    if(selectedPeerName !== undefined && selectedPeerName !== null && this.ws?.readyState === WebSocket.OPEN){
+    if (selectedPeerName !== undefined && selectedPeerName !== null && this.ws?.readyState === WebSocket.OPEN) {
       let createSessionMsg = new SocketMessage(MessageType.REQUEST, selectedPeerName, this.wsClient.webClientName);
       createSessionMsg.setMessageSubType(MessageSubType.CREATESESSION);
       createSessionMsg.setMessage(selectedPeerName);
@@ -249,19 +252,19 @@ export class HomeComponent implements OnInit {
       }
 
       default:
-            
-            this.sqtMessageWorker(this.createSQMessage(SQMessageType.SERVER, sm.getMessage()));
-      
-          break;
+
+        this.sqtMessageWorker(this.createSQMessage(SQMessageType.SERVER, sm.getMessage()));
+
+        break;
         break;
 
     }
   }
 
-  sqtMessageWorker(sqt: SQText){
-    if(this.sqBodyTextContainer.checkVisibility()){
-        this.sqtbody.push(sqt);
-    }else{
+  sqtMessageWorker(sqt: SQText) {
+    if (this.sqBodyTextContainer.checkVisibility()) {
+      this.sqtbody.push(sqt);
+    } else {
       this.sqUnAttndCount += 1;
       this.sqtbody.push(sqt);
     }
