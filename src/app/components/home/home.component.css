@@ -108,9 +108,9 @@ span.splitbutton-icon{
     padding: 0 1rem;
     text-align: center;
    
-    background: var(--neutral-fill-focus);
+    background: var(--neutral-stroke-layer-rest);
     color: var(--neutral-foreground-rest);
-    border: calc(var(--stroke-width) * 1.4px) solid var(--neutral-stroke-layer-rest);
+    /* border: calc(var(--stroke-width) * 1.4px) solid var(--neutral-stroke-layer-rest); */
     
     /* box-shadow: var(--elevation-shadow-card-rest); */
 
@@ -120,6 +120,7 @@ span.splitbutton-icon{
   
    width: .75rem; aspect-ratio: 1; 
    border-radius: .75rem;
+   margin-right: .6rem;
 }
 .peer-status-light[status="con"]{
   background-color: hsl(147 100% 66% / 1);
@@ -237,7 +238,7 @@ display: flex;
 }
 
 .pie {
-
+  margin-left: .8rem;
   --b:.5rem;
   --c: var(--accent-fill-rest);
   --w:1.5rem;

@@ -1,8 +1,9 @@
 export class SessionPacket {
     private sessionID: string;
     private peer: string = "";
-    private stateCode: number = 3; //3 conecting 2 connected 1 failed
+    private stateCode: number = 0; //0 conecting (default) | 1 connected | 2 failed
     private statusMessage: string = "";
+    private healthCycle: number = 2*60; // ping pong health in SECONDS, default every two minutes
 
     constructor() {
         this.sessionID = this.generateHashKey(8);
@@ -11,11 +12,7 @@ export class SessionPacket {
         this.peer = name;
         return this;
     }
-    setStateCode(code: number) {
-        this.stateCode = code;
-        return this;
-    }
-
+    
     getPeerName() {
         return this.peer;
     }
@@ -23,13 +20,40 @@ export class SessionPacket {
         return this.stateCode;
     }
 
-    validatePacket(){
+    getStatusMessage(){
+        return this.statusMessage;
+    }
+
+    getHealthTimeOut(){
+        return this.healthCycle;
+    }
+    private validatePacket(){
         if(this.peer === ""){
             throw new Error("Peer name is Empty, Validation Failed");
         }
         return this;
     }
 
+    preparePacket(){
+        this.validatePacket();
+        return JSON.stringify(this);
+    }
+
+    setHealthTimeout(minutes: number){
+        this.healthCycle = minutes * 60;
+        return this;
+    }
+
+    static parseJSON(validJSON: string){
+        let obj = <SessionPacket>JSON.parse(validJSON);
+        let n = new SessionPacket();
+        n.sessionID = obj.sessionID;
+        n.peer = obj.peer;
+        n.stateCode = obj.stateCode;
+        n.statusMessage = obj.statusMessage;
+        n.healthCycle = obj.healthCycle;
+        return n;
+    }
 
     private generateHashKey(hashLength: number): string {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

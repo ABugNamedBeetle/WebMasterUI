@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { baseLayerLuminance, Button, Listbox, StandardLuminance, Switch, switchStyles, TextField, TreeItem, TreeView } from '@fluentui/web-components';
 
 import { Combobox } from '@fluentui/web-components';
+import { SessionPacket } from 'src/app/models/SessionPacket';
 import { SQIconType, SQMessageType, SQText } from 'src/app/models/sqText';
 import { WebClientDetail } from 'src/app/models/webClientDetail';
 import { MessageSubType, MessageType, SocketMessage, SocketMessageInit } from 'src/app/models/websocketMessage';
@@ -34,7 +35,9 @@ export class HomeComponent implements OnInit {
 
   cPeerStatusConnected: boolean = false;
   cPeerName = "Connect Peer";
-  cLastHealth = "00:00AM"
+  cLastHealth = "00:00AM";
+  cHealthTimeOut = 0;
+  healthIntervalID: number = -1;
   peerOnChnlList!: TreeView;
 
 
@@ -123,9 +126,15 @@ export class HomeComponent implements OnInit {
         this.ws.onclose = (ev: CloseEvent) => {
           this.wsIconState = "red";
           this.wsButton.textContent = "Connect";
-          this.cPeerStatusConnected = false;
-          this.cPeerName = "Connect Peer";
-          this.cLastHealth = "00:00AM"
+          if (this.cPeerStatusConnected) {
+            this.cPeerStatusConnected = false;
+            this.cHealthTimeOut = 0;
+            this.cPeerName = "Connect Peer";
+            this.cLastHealth = "00:00AM"
+          }
+
+          clearInterval(this.healthIntervalID); //clear session session scheduler 
+
           this.sqtbody.push(this.createSQMessage(SQMessageType.SELF, "WebSocket Closed", "red"));
         }
         this.ws.onopen = (event: Event) => {
@@ -188,31 +197,11 @@ export class HomeComponent implements OnInit {
 
   }
 
-  loadPeers() {
-    console.log("in load peer");
-    let msg = new SocketMessage(MessageType.REQUEST, "server", this.wsClient.webClientName);
-    msg.setMessage("List Peer request");
-    msg.setMessageSubType(MessageSubType.LISTPEER)
-    console.log(msg);
-    this.ws?.send(msg.preparePacket());
-  }
-  sendPeerSessionRequest() {
-    let selectedPeerName = this.peerOnChnlList.currentSelected?.textContent?.trim();
-    console.log(selectedPeerName);
-    if (selectedPeerName !== undefined && selectedPeerName !== null && this.ws?.readyState === WebSocket.OPEN) {
-      let createSessionMsg = new SocketMessage(MessageType.REQUEST, selectedPeerName, this.wsClient.webClientName);
-      createSessionMsg.setMessageSubType(MessageSubType.CREATESESSION);
-      createSessionMsg.setMessage(selectedPeerName);
-      console.log(createSessionMsg);
-      this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_REQ, `Create Session Sent to ${selectedPeerName}`));
-      this.ws?.send(createSessionMsg.preparePacket());
 
-    }
-
-  }
-
+  //RESPONSE message Worker
   messageWorker(data: string) {
     let sm: SocketMessage = SocketMessage.parseJSON(data);
+    console.log(sm);
 
     switch (sm.type) {
 
@@ -222,7 +211,7 @@ export class HomeComponent implements OnInit {
       default:
         break;
     }
-    console.log(sm);
+
 
     setTimeout(() => {
       this.sqBodyTextContainer.scrollTop = this.sqBodyTextContainer.scrollHeight;
@@ -245,9 +234,37 @@ export class HomeComponent implements OnInit {
 
       case MessageSubType.SESSIONCREATED: {
 
-        this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_RES, `Session Created Recevied from ${sm.getOrigin()}`));
-        this.cPeerName = sm.getOrigin();
-        this.cPeerStatusConnected = true;
+        this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_RES, `Session Accepted from ${sm.getOrigin()}`));
+        let sp: SessionPacket = SessionPacket.parseJSON(sm.getMessage());
+        if (sp.getStateCode() === 2) {
+          if (sp.getPeerName().trim() === this.wsClient.webClientName.trim()) { //same rec and clinet name
+
+            this.cPeerName = sm.getOrigin();
+            this.cPeerStatusConnected = true;
+            this.cHealthTimeOut = sp.getHealthTimeOut();
+            //send first session health
+            this.sendSessionHealth();
+            //and start 
+            this.healthIntervalID = window.setInterval(() => {
+              this.sendSessionHealth();
+              console.log(Date.now());
+            }, this.cHealthTimeOut * 1000);
+
+
+          }
+        }
+
+
+        break;
+      }
+
+      case MessageSubType.SESSIONHEALTH: { //when recived session health
+        let options: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", hour12: true }
+
+        this.cLastHealth = new Date().toLocaleTimeString('en-US', options);
+        console.log(this.cLastHealth);
+
+        //login for failing
         break;
       }
 
@@ -261,12 +278,86 @@ export class HomeComponent implements OnInit {
     }
   }
 
+
+  //will add message to Select Query Text windows, if not visible then add to counter badge
   sqtMessageWorker(sqt: SQText) {
     if (this.sqBodyTextContainer.checkVisibility()) {
       this.sqtbody.push(sqt);
     } else {
       this.sqUnAttndCount += 1;
       this.sqtbody.push(sqt);
+    }
+  }
+
+  ///request Funcitons
+  loadPeers() {
+    try {
+      clearInterval(this.healthIntervalID); //clear session session scheduler 
+    } finally {
+
+      this.requestMessageWorker("LIST-PEER");
+    }
+  }
+  sendPeerSessionRequest() {
+    try {
+
+      clearInterval(this.healthIntervalID); //clear session session scheduler 
+    } finally {
+
+      this.requestMessageWorker("CREATE-SESSION");
+    }
+  }
+  sendSessionHealth() {
+    this.requestMessageWorker("SESSION-HEALTH");
+  }
+
+
+  requestMessageWorker(requestType: string) {
+
+    switch (requestType) {
+      case "CREATE-SESSION": {
+        let selectedPeerName = this.peerOnChnlList.currentSelected?.textContent?.trim();
+        console.log(selectedPeerName);
+        if (selectedPeerName !== undefined && selectedPeerName !== null && this.ws?.readyState === WebSocket.OPEN) {
+          let createSessionMsg = new SocketMessage(MessageType.REQUEST, selectedPeerName, this.wsClient.webClientName);
+          createSessionMsg.setMessageSubType(MessageSubType.CREATESESSION);
+          //create session packet
+          let sp = new SessionPacket().setPeerName(selectedPeerName).setHealthTimeout(1);
+          createSessionMsg.setMessage(sp.preparePacket());
+          console.log(createSessionMsg);
+
+
+          this.sqtMessageWorker(this.createSQMessage(SQMessageType.PEER_REQ, `Session Sent to ${selectedPeerName}`));
+          this.ws?.send(createSessionMsg.preparePacket());
+
+        }
+      }
+
+        break;
+
+
+      case "LIST-PEER": {
+        console.log("in load peer");
+        let msg = new SocketMessage(MessageType.REQUEST, "server", this.wsClient.webClientName);
+        msg.setMessage("List Peer request");
+        msg.setMessageSubType(MessageSubType.LISTPEER)
+        console.log(msg);
+        this.ws?.send(msg.preparePacket());
+        break;
+      }
+      case "SESSION-HEALTH": {
+
+        let sHmsg = new SocketMessage(MessageType.REQUEST, this.cPeerName, this.wsClient.webClientName);
+        sHmsg.setMessageSubType(MessageSubType.SESSIONHEALTH);
+        sHmsg.setMessage("-SESSION-HEALTH-OK-");
+        console.log(sHmsg);
+        this.ws?.send(sHmsg.preparePacket());
+        break;
+      }
+
+
+      default:
+        break;
     }
   }
 
